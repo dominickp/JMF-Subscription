@@ -32,7 +32,7 @@ function handleRequest(request, response){
                 winston.error("Parse error" + err);
             }
             
-            if(typeof result["JMF"]["Signal"] !== 'undefined'){
+            if(typeof result["JMF"]["Signal"][0]["DeviceInfo"] !== 'undefined'){
                 winston.info('Subscription Update', { 
                         DeviceStatus: result["JMF"]["Signal"][0]["DeviceInfo"][0]["$"]["DeviceStatus"],
                         StatusDetails: result["JMF"]["Signal"][0]["DeviceInfo"][0]["$"]["StatusDetails"],
