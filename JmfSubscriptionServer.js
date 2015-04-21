@@ -3,7 +3,7 @@ var http = require('http');
 var winston = require('winston');
 
 // Prepare log file
-winston.add(winston.transports.File, { filename: 'requests.log' });
+winston.add(winston.transports.File, { filename: 'logs/server_requests.log' });
 
 // Lets define a port we want to listen to
 const PORT=9090;

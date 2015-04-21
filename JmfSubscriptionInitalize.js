@@ -1,4 +1,9 @@
+// Require modules
 var request = require('request').debug = true;
+var winston = require('winston');
+
+// Prepare log file
+winston.add(winston.transports.File, { filename: 'logs/initialization_responses.log' });
 
 // Set the headers
 var http_headers = {
@@ -21,24 +26,15 @@ var options = {
     body: jmf_payload
 }
 
-
 // Start the request
 require('request')(options, function (error, response, response_body) {
     if (!error && response.statusCode == 200) {
-        // Print out the response body
-        console.log(response_body);
+        // Log the body of the response
+        winston.info('Response', { body: response_body });
     } else {
         console.log(error);
+        // Log the error
+        winston.error('Error', { body: response_body });
     }
 })
 
-/*
-require('request').post({
-    uri:idp_endpoint,
-    headers: http_headers,
-    body:require('querystring').stringify(jmf_payload)
-    },function(err,res,body){
-        console.log(body);
-        console.log(res.statusCode);
-});
-*/
