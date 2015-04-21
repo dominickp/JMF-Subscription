@@ -12,7 +12,7 @@ function handleRequest(request, response){
     response.end('It Works!! Path Hit: ' + request.url);
 
     // Log it
-    winston.info(request.body);
+    winston.info(request);
 }
 
 //Create a server
