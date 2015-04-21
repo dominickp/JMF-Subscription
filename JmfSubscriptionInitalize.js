@@ -16,7 +16,7 @@ var idp_endpoint = 'http://192.168.1.40:8080/prodflow/jmf/HP-Indigo-BUDPB';
 var jmf_subscription_server = 'http://192.168.1.60:9090';
 
 
-var jmf_payload = '<?xml version="1.0" encoding="UTF-8"?><JMF xmlns="http://www.CIP4.org/JDFSchema_1_1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" SenderID="MIS System" TimeStamp="2006-04-19T17:25:51-07:00" Version="1.2"><Query ID="misb4b04635d9f64c6e" Type="QueueStatus" xsi:type="QueryQueueStatus"><Subscription URL="'+jmf_subscription_server+'" /></Query></JMF>';
+var jmf_payload = '<?xml version="1.0" encoding="UTF-8"?><JMF xmlns="http://www.CIP4.org/JDFSchema_1_1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" SenderID="MIS System" TimeStamp="2006-04-19T15:04:33-07:00" Version="1.2"><Query ID="misb42ee80c31ff464f" Type="Status" xsi:type="QueryStatus"><Subscription URL="'+jmf_subscription_server+'" /><StatusQuParams DeviceDetails="Details" /></Query></JMF>';
 
 // Configure the request
 var options = {
