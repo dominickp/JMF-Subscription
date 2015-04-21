@@ -1,6 +1,8 @@
 // Require modules
 var http = require('http');
 var winston = require('winston');
+var parseString = require('xml2js').parseString;
+var util = require('util');
 
 // Prepare log file
 winston.add(winston.transports.File, { filename: 'logs/server_requests.log' });
@@ -15,11 +17,34 @@ function handleRequest(request, response){
      
     request.on('data', function (data) {
         body += data;
-        console.log("Partial body: " + body);
+        //console.log("Partial body: " + body);
     });
+    
     request.on('end', function () {
-        // Log the body of the request
-        winston.info('Incoming Request', { url: request.url, body: body });
+        // Attempt to parse the XML
+        parseString(body, {trim: true}, function (err, result) {
+            // Log the body of the request
+            //var jsonResult = JSON.parse(result);
+            
+            var fullResult = util.inspect(result, false, null);
+            
+            if(err){
+                winston.error("Parse error" + err);
+            }
+            
+            if(typeof result["JMF"]["Signal"] !== 'undefined'){
+                winston.info('Subscription Update', { 
+                        DeviceStatus: result["JMF"]["Signal"][0]["DeviceInfo"][0]["$"]["DeviceStatus"],
+                        StatusDetails: result["JMF"]["Signal"][0]["DeviceInfo"][0]["$"]["StatusDetails"],
+                        ProductionCounter: result["JMF"]["Signal"][0]["DeviceInfo"][0]["$"]["ProductionCounter"]
+                    }
+                );
+            }
+            //winston.info('Body', { body: result });
+            // Log original XML string
+            //console.log("Partial body: " + body);
+        });
+        
     });
     
     // Send a response
