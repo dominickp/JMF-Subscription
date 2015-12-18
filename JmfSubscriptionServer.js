@@ -40,7 +40,7 @@ function handleRequest(request, response){
                     }
                 );
             }
-            //winston.info('Body', { body: result });
+            winston.info('Entire response', { body: result });
             // Log original XML string
             //console.log("Partial body: " + body);
         });

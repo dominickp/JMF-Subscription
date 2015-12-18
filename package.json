@@ -19,6 +19,7 @@
   "dependencies": {
     "request": "^2.67.0",
     "winston": "^2.1.1",
-    "xml2js": "^0.4.15"
+    "xml2js": "^0.4.15",
+    "yargs": "^3.31.0"
   }
 }
