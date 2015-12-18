@@ -8,14 +8,10 @@ var argv = require('yargs')
     .demand(['port'])
     .argv;
 
-
-
 // Prepare log file
 winston.add(winston.transports.File, { filename: 'logs/server_requests.log' });
 
 // Lets define a port we want to listen to
-const PORT=9090;
-
 var port = argv.port;
 
 // We need a function which handles requests and send response
@@ -65,7 +61,7 @@ function handleRequest(request, response){
 var server = http.createServer(handleRequest);
 
 // Lets start our server
-server.listen(PORT, function(){
+server.listen(port, function(){
     // Callback triggered when server is successfully listening
-    console.log("Server listening on: http://localhost:%s", PORT);
+    console.log("Server listening on: http://localhost:%s", port);
 });
