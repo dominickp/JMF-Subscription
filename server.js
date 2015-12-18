@@ -41,7 +41,13 @@ function handleRequest(request, response){
             }
 
             if(typeof result["JMF"]["Signal"][0]["DeviceInfo"] !== 'undefined'){
-                winston.log('info', {response: body});
+                winston.log('info', {
+                        DeviceID: result["JMF"]["Signal"][0]["DeviceInfo"][0]["$"]["DeviceID"],
+                        DeviceStatus: result["JMF"]["Signal"][0]["DeviceInfo"][0]["$"]["DeviceStatus"],
+                        StatusDetails: result["JMF"]["Signal"][0]["DeviceInfo"][0]["$"]["StatusDetails"],
+                        ProductionCounter: result["JMF"]["Signal"][0]["DeviceInfo"][0]["$"]["ProductionCounter"]
+                    }
+                );
 
                 // Insert into database
                 var doc = {
