@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/dominickp/JMF-Subscription#readme",
   "dependencies": {
+    "nedb": "^1.5.0",
     "request": "^2.67.0",
     "winston": "^2.1.1",
     "xml2js": "^0.4.15",
