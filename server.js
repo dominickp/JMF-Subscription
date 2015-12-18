@@ -7,6 +7,10 @@ var argv = require('yargs')
     .usage('Usage: $0 --port [num]')
     .demand(['port'])
     .argv;
+var Datastore = require('nedb')
+    , db = new Datastore({ filename: 'db/server.db', autoload: true });
+
+
 
 // Prepare log file
 winston.add(winston.transports.File, { filename: 'logs/server_requests.log' });
@@ -44,6 +48,20 @@ function handleRequest(request, response){
                         ProductionCounter: result["JMF"]["Signal"][0]["DeviceInfo"][0]["$"]["ProductionCounter"]
                     }
                 );
+
+                // Insert into database
+                var doc = {
+                    DeviceID: result["JMF"]["Signal"][0]["DeviceInfo"][0]["$"]["DeviceID"],
+                    DeviceStatus: result["JMF"]["Signal"][0]["DeviceInfo"][0]["$"]["DeviceStatus"],
+                    StatusDetails: result["JMF"]["Signal"][0]["DeviceInfo"][0]["$"]["StatusDetails"],
+                    ProductionCounter: result["JMF"]["Signal"][0]["DeviceInfo"][0]["$"]["ProductionCounter"]
+                };
+
+                db.insert(doc, function (err, newDoc) {   // Callback is optional
+                    // newDoc is the newly inserted document, including its _id
+                    // newDoc has no key called notToBeSaved since its value was undefined
+                });
+
             }
             //winston.log('info', { body: result });
 
