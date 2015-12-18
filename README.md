@@ -13,11 +13,24 @@ info:  http=http://192.168.1.40:8080/dpp/jmf/192.168.1.45
 info:  http=http://192.168.1.40:8080/dpp/jmf/HP-Indigo-BUDPB
 info:  result=HP-Indigo-BUDPB subscribed successfully.
 info:  result=192.168.1.45 subscribed successfully.
-
 ```
 
 ## server.js
-This simple server opens a port and listens for subscription events from the JMF devices. 
+This simple server opens a port and listens for subscription events from the JMF devices. Takes one argument. '--port' is the port the server should listen on.
+
+```
+dominick$ node server.js --port 9090
+Server listening on: http://localhost:9090
+info:  DeviceID=HP-Indigo-BUDPB, DeviceStatus=Running, StatusDetails=Indigo: Printing, ProductionCounter=49942091
+info:  DeviceID=HP-Indigo-BUDPB, DeviceStatus=Running, StatusDetails=Indigo: Printing, ProductionCounter=49942098
+info:  DeviceID=HP-Indigo-BUDPB, DeviceStatus=Running, StatusDetails=Indigo: Printing, ProductionCounter=49942109
+info:  DeviceID=HP-Indigo-BUDPB, DeviceStatus=Idle, StatusDetails=Indigo: Ready, ProductionCounter=49942109
+info:  DeviceID=192.168.1.45, DeviceStatus=Idle, StatusDetails=Indigo: Ready, ProductionCounter=35089299
+info:  DeviceID=192.168.1.45, DeviceStatus=Running, StatusDetails=Indigo: Printing, ProductionCounter=35089299
+
+```
+
+The server also saves the JMF details in a simple nebd database.
 
 ## Info
 For more information, see this post for now: http://forum.enfocus.com/viewtopic.php?f=13&t=761
