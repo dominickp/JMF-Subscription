@@ -29,7 +29,7 @@ var discoverDevices = function(){
     var jmf_known_devices =
         '<?xml version="1.0" encoding="UTF-8"?>' +
         '<JMF xmlns="http://www.CIP4.org/JDFSchema_1_1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" SenderID="'+application_name+'" TimeStamp="2006-04-19T14:48:12-07:00" Version="1.2">' +
-        '<Query ID="misb41feececf78250c" Type="KnownDevices" xsi:type="QueryKnownDevices">' +
+        '<Query ID="JDFSpy_DiscoverDevices" Type="KnownDevices" xsi:type="QueryKnownDevices">' +
         '<DeviceFilter DeviceDetails="Brief" />' +
         '</Query>' +
         '</JMF>';
@@ -81,9 +81,18 @@ var discoverDevices = function(){
 // Request to subscribe to devices
 var subscribeDevices = function(devices){
 
-    var jmf_subscribe = '<?xml version="1.0" encoding="UTF-8"?><JMF xmlns="http://www.CIP4.org/JDFSchema_1_1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" SenderID="MIS System" TimeStamp="2006-04-19T15:04:33-07:00" Version="1.2"><Query ID="misb42ee80c31ff464f" Type="Status" xsi:type="QueryStatus"><Subscription URL="'+jmf_server+'" /><StatusQuParams DeviceDetails="Details" /></Query></JMF>';
-
     devices.forEach(function(device){
+
+        var jmf_subscribe = '<?xml version="1.0" encoding="UTF-8"?>' +
+            '<JMF xmlns="http://www.CIP4.org/JDFSchema_1_1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" SenderID="'+application_name+'" TimeStamp="2015-12-18T11:04:35-07:00" Version="1.4">' +
+            '<Query ID="JDFSpy_Detail-'+device+'" Type="Status" xsi:type="QueryStatus">' +
+            '<Subscription URL="'+jmf_server+'" />' +
+            '<StatusQuParams DeviceDetails="Details" />' +
+            '</Query>' +
+            '</JMF>';
+
+        winston.log('info', { jdf: jmf_subscribe });
+
 
         // Configure the request
         var options = {
@@ -92,6 +101,8 @@ var subscribeDevices = function(devices){
             headers: http_headers,
             body: jmf_subscribe
         };
+
+        winston.log('info', { http: idp_worker+device });
 
         require("request")(options, function (error, response, response_body) {
             if (!error && response.statusCode == 200) {

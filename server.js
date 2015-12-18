@@ -66,7 +66,7 @@ function handleRequest(request, response){
             //winston.log('info', { body: result });
 
             // Log original XML string
-            //console.log("Partial body: " + body);
+            console.log("Partial body: " + body);
         });
 
     });
