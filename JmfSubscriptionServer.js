@@ -34,13 +34,15 @@ function handleRequest(request, response){
             
             if(typeof result["JMF"]["Signal"][0]["DeviceInfo"] !== 'undefined'){
                 winston.info('Subscription Update', { 
+                        DeviceID: result["JMF"]["Signal"][0]["DeviceInfo"][0]["$"]["DeviceID"],
                         DeviceStatus: result["JMF"]["Signal"][0]["DeviceInfo"][0]["$"]["DeviceStatus"],
                         StatusDetails: result["JMF"]["Signal"][0]["DeviceInfo"][0]["$"]["StatusDetails"],
                         ProductionCounter: result["JMF"]["Signal"][0]["DeviceInfo"][0]["$"]["ProductionCounter"]
                     }
                 );
             }
-            winston.info('Entire response', { body: result });
+            //winston.log('info', { body: result });
+
             // Log original XML string
             //console.log("Partial body: " + body);
         });
