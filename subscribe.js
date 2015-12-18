@@ -4,7 +4,6 @@ var winston = require('winston');
 var argv = require('yargs').argv;
 var parseString = require('xml2js').parseString;
 
-
 // Prepare log file
 winston.add(winston.transports.File, { filename: 'logs/initialization_responses.log' });
 
@@ -17,35 +16,20 @@ var http_headers = {
 // Var
 var application_name = 'JDF Spy';
 var idp_worker = argv.idp; // http://192.168.1.40:8080/prodflow/jmf/
+var jmf_server = argv.server; //http://192.168.1.70:9090
 var devices = [];
-
-
-// Find presses
-var jmf_known_devices =
-    '<?xml version="1.0" encoding="UTF-8"?>' +
-    '<JMF xmlns="http://www.CIP4.org/JDFSchema_1_1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" SenderID="'+application_name+'" TimeStamp="2006-04-19T14:48:12-07:00" Version="1.2">' +
-        '<Query ID="misb41feececf78250c" Type="KnownDevices" xsi:type="QueryKnownDevices">' +
-            '<DeviceFilter DeviceDetails="Brief" />' +
-        '</Query>' +
-    '</JMF>';
-
-
-
-// Should get all presses with another call
-//var press = argv.press; // HP-Indigo-BUDPB
-
-//var idp_endpoint = idp_worker+press;
-
-// Should default to self
-var jmf_subscription_server = 'http://192.168.1.70:9090';
-
-
-//var jmf_payload = '<?xml version="1.0" encoding="UTF-8"?><JMF xmlns="http://www.CIP4.org/JDFSchema_1_1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" SenderID="MIS System" TimeStamp="2006-04-19T15:04:33-07:00" Version="1.2"><Query ID="misb42ee80c31ff464f" Type="Status" xsi:type="QueryStatus"><Subscription URL="'+jmf_subscription_server+'" /><StatusQuParams DeviceDetails="Details" /></Query></JMF>';
-
-
 
 // Start the request to find devices
 var discoverDevices = function(){
+
+    // Find presses
+    var jmf_known_devices =
+        '<?xml version="1.0" encoding="UTF-8"?>' +
+        '<JMF xmlns="http://www.CIP4.org/JDFSchema_1_1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" SenderID="'+application_name+'" TimeStamp="2006-04-19T14:48:12-07:00" Version="1.2">' +
+        '<Query ID="misb41feececf78250c" Type="KnownDevices" xsi:type="QueryKnownDevices">' +
+        '<DeviceFilter DeviceDetails="Brief" />' +
+        '</Query>' +
+        '</JMF>';
 
     // Configure the request
     var options = {
@@ -89,13 +73,12 @@ var discoverDevices = function(){
             winston.error('Error', { body: response_body });
         }
     });
-}();
+}(); // Execute
 
 // Request to subscribe to devices
 var subscribeDevices = function(devices){
 
-    var jmf_subscribe = '<?xml version="1.0" encoding="UTF-8"?><JMF xmlns="http://www.CIP4.org/JDFSchema_1_1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" SenderID="MIS System" TimeStamp="2006-04-19T15:04:33-07:00" Version="1.2"><Query ID="misb42ee80c31ff464f" Type="Status" xsi:type="QueryStatus"><Subscription URL="'+jmf_subscription_server+'" /><StatusQuParams DeviceDetails="Details" /></Query></JMF>';
-
+    var jmf_subscribe = '<?xml version="1.0" encoding="UTF-8"?><JMF xmlns="http://www.CIP4.org/JDFSchema_1_1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" SenderID="MIS System" TimeStamp="2006-04-19T15:04:33-07:00" Version="1.2"><Query ID="misb42ee80c31ff464f" Type="Status" xsi:type="QueryStatus"><Subscription URL="'+jmf_server+'" /><StatusQuParams DeviceDetails="Details" /></Query></JMF>';
 
     devices.forEach(function(device){
 
@@ -109,7 +92,7 @@ var subscribeDevices = function(devices){
 
         require("request")(options, function (error, response, response_body) {
             if (!error && response.statusCode == 200) {
-                // Log the body of the response
+                // Log the body of the response (XML)
                 //winston.info('Response', { body: response_body });
 
                 // Attempt to parse the XML
@@ -125,7 +108,6 @@ var subscribeDevices = function(devices){
                             body: result["JMF"].$$["Response"][0]
                         });
                     }
-
                 });
 
             } else {
