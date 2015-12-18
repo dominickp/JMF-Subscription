@@ -1,7 +1,10 @@
 // Require modules
 var request = require('request').debug = false;
 var winston = require('winston');
-var argv = require('yargs').argv;
+var argv = require('yargs')
+    .usage('Usage: $0 --idp [host] --server [ip:port]')
+    .demand(['idp', 'server'])
+    .argv;
 var parseString = require('xml2js').parseString;
 
 // Prepare log file
