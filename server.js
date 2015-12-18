@@ -8,7 +8,7 @@ var argv = require('yargs')
     .demand(['port'])
     .argv;
 var Datastore = require('nedb')
-    , db = new Datastore({ filename: 'db/server.db', autoload: true });
+    , db = new Datastore({ filename: 'db/server.db', timestampData: true, autoload: true });
 
 
 
@@ -41,19 +41,15 @@ function handleRequest(request, response){
             }
 
             if(typeof result["JMF"]["Signal"][0]["DeviceInfo"] !== 'undefined'){
-                winston.info('Subscription Update', {
-                        DeviceID: result["JMF"]["Signal"][0]["DeviceInfo"][0]["$"]["DeviceID"],
-                        DeviceStatus: result["JMF"]["Signal"][0]["DeviceInfo"][0]["$"]["DeviceStatus"],
-                        StatusDetails: result["JMF"]["Signal"][0]["DeviceInfo"][0]["$"]["StatusDetails"],
-                        ProductionCounter: result["JMF"]["Signal"][0]["DeviceInfo"][0]["$"]["ProductionCounter"]
-                    }
-                );
+                winston.log('info', {response: body});
 
                 // Insert into database
                 var doc = {
                     DeviceID: result["JMF"]["Signal"][0]["DeviceInfo"][0]["$"]["DeviceID"],
                     DeviceStatus: result["JMF"]["Signal"][0]["DeviceInfo"][0]["$"]["DeviceStatus"],
                     StatusDetails: result["JMF"]["Signal"][0]["DeviceInfo"][0]["$"]["StatusDetails"],
+                    SignalID: result["JMF"]["Signal"][0].$["ID"],
+                    SignalType: result["JMF"]["Signal"][0].$['xsi:type'],
                     ProductionCounter: result["JMF"]["Signal"][0]["DeviceInfo"][0]["$"]["ProductionCounter"]
                 };
 
@@ -66,7 +62,7 @@ function handleRequest(request, response){
             //winston.log('info', { body: result });
 
             // Log original XML string
-            console.log("Partial body: " + body);
+            //console.log(body);
         });
 
     });

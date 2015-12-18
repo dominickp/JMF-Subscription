@@ -91,8 +91,7 @@ var subscribeDevices = function(devices){
             '</Query>' +
             '</JMF>';
 
-        winston.log('info', { jdf: jmf_subscribe });
-
+        //winston.log('info', { jdf: jmf_subscribe });
 
         // Configure the request
         var options = {
