@@ -114,9 +114,17 @@ var subscribeDevices = function(devices){
 
                 // Attempt to parse the XML
                 parseString(response_body, {trim: true, explicitChildren: true}, function (err, result) {
-                    console.log("Subscription success");
 
-                    //winston.log('info', {body: result});
+                    var subscribed = result["JMF"].$$["Response"][0].$["Subscribed"];
+
+                    if(subscribed === 'true'){
+                        winston.log('info', {result: device+' subscribed successfully.'});
+                    } else {
+                        winston.log('error', {
+                            result: device+' could not be subscribed to.',
+                            body: result["JMF"].$$["Response"][0]
+                        });
+                    }
 
                 });
 
