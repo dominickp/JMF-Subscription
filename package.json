@@ -1,0 +1,24 @@
+{
+  "name": "jmf-subscription",
+  "version": "1.0.0",
+  "description": "If you want to get some information from your Indigo/DFE, you can always send it a JMF. But if you are actively monitoring the status of the device, you're better off with a JMF subscription which will notify an HTTP endpoint when something changes. Below you'll find an example on how to implement a basic JMF subscription endpoint using Node.",
+  "main": "JmfSubscriptionInitalize.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dominickp/JMF-Subscription.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dominickp/JMF-Subscription/issues"
+  },
+  "homepage": "https://github.com/dominickp/JMF-Subscription#readme",
+  "dependencies": {
+    "request": "^2.67.0",
+    "winston": "^2.1.1",
+    "xml2js": "^0.4.15"
+  }
+}
