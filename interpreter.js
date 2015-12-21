@@ -2,7 +2,7 @@
 var http = require('http');
 var winston = require('winston');
 var Datastore = require('nedb')
-    , db = new Datastore({ filename: __dirname + '/db/live_server.db', timestampData: true, autoload: true });
+    , db = new Datastore({ filename: __dirname + '/db/server.db', timestampData: true, autoload: true });
 var fs = require('fs');
 var request = require('request');
 var argv = require('yargs')
@@ -49,8 +49,6 @@ var buildRanges = function(presses){
             var updatesToDelete = [];
 
             var ranges = [];
-
-            console.log('INTERPRET '+press);
 
             // Loop through each update
             updates.forEach(function(update, index){
@@ -119,14 +117,16 @@ var buildRanges = function(presses){
                 last = update;
             });
 
-            console.log('updates: '+updates.length);
-            console.log('ranges: '+ranges.length);
-            console.log('totalRemoved: '+totalRemoved);
-            console.log(updatesToDelete);
+            winston.log('info', {
+                press: press,
+                updates: updates.length,
+                ranges: ranges.length,
+                totalRemoved: totalRemoved
+            });
 
-            postRanges(ranges, updatesToDelete);
-
-
+            if(ranges.length > 0){
+                postRanges(ranges, updatesToDelete);
+            }
 
 
         });
@@ -134,12 +134,7 @@ var buildRanges = function(presses){
 
 };
 
-
 var postRanges = function(ranges, updatesToDelete){
-
-
-    //console.log({ranges:ranges.slice(0,3)});
-
 
     request(range_endpoint,
         { json: true, body: {ranges:ranges} },
@@ -147,17 +142,22 @@ var postRanges = function(ranges, updatesToDelete){
             // `body` is a js object if request was successful
 
             if(!err && res.statusCode == 200){
-                console.log('POST successful');
-
+                // Need to delete updates which have been logged as ranges
+                updatesToDelete.forEach(function(updateRange){
+                   updateRange.forEach(function(id){
+                       // Delete from data store
+                       db.remove({ _id: id }, {}, function (err, numRemoved) {
+                           // numRemoved = 1
+                           if(err){
+                               winston.log('error', {removal_error:err})
+                           }
+                       });
+                   });
+                });
                 //console.log(body);
             } else {
                 winston.log('error', {post_error:res.statusCode});
             }
-
-
-
-            //console.log(res);
-
         });
 };
 

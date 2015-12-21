@@ -32,6 +32,17 @@ info:  DeviceID=192.168.1.45, DeviceStatus=Running, StatusDetails=Indigo: Printi
 
 The server also saves the JMF details in a simple nebd database.
 
+## interpreter.js
+This script reads the JMF updates from the server above from the database and converts them to usable time ranges that can be reported upon. It also posts those ranges in a JSON request to another endpoint and if successful, deletes them from the local data store. It will always leave the last update so the next range has something to start with. Takes one argument. '--range-endpoint' is the URI of the endpoint that accepts the ranges.
+
+```
+node interpreter.js --range-endpoint=http://insight.dev/switch-api/jmf-spy/add-ranges
+[ '192.168.1.45': 1, 'HP-Indigo-BUDPB': 1 ]
+info:  press=192.168.1.45, updates=563, ranges=178, totalRemoved=561
+info:  press=HP-Indigo-BUDPB, updates=276, ranges=165, totalRemoved=275
+
+```
+
 ## Info
 For more information, see this post for now: http://forum.enfocus.com/viewtopic.php?f=13&t=761
 
