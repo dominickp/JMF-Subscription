@@ -5,9 +5,6 @@ var Datastore = require('nedb')
     , db = new Datastore({ filename: __dirname + '/db/live_server.db', timestampData: true, autoload: true });
 
 
-
-
-
 // Find presses
 db.find({}, {DeviceID:1}, function (err, updates) {
 
@@ -47,13 +44,8 @@ var buildRanges = function(presses){
             updates.forEach(function(update, index){
                 //console.log(index);
 
-
                 if(index === 0){
-                    // First
-
-                    console.log('First');
-                    //last = update;
-                    //return;
+                    // First, do nothing
 
                 } else {
                     // All others
@@ -61,13 +53,6 @@ var buildRanges = function(presses){
                     // Try to build a range
                     if(update.StatusDetails == last.StatusDetails){
                         // Continue growing range
-
-                        //console.log(update.StatusDetails);
-                        //console.log(update.ProductionCounter+' '+last.ProductionCounter);
-                        //
-                        ////currentClicks += (update.ProductionCounter-last.ProductionCounter);
-                        //
-                        //console.log('currentTime: '+currentTime);
 
                         // Increment time
                         var newDiff = Math.abs(update.createdAt-last.createdAt);
@@ -77,19 +62,10 @@ var buildRanges = function(presses){
                         var newClicks = Math.abs(update.ProductionCounter-last.ProductionCounter);
                         currentClicks += newClicks;
 
-
-                        //console.log('update '+update.ProductionCounter);
-                        //
-                        //console.log('clicks '+currentClicks);
-                        //
-
                         updateCounter++;
-
 
                     } else {
                         // end and start a new range
-
-
                         // Increment time
                         var newDiff = Math.abs(update.createdAt-last.createdAt);
                         currentTime += newDiff;
@@ -119,8 +95,6 @@ var buildRanges = function(presses){
 
                 }
 
-
-
                 // Set for next in the loop
                 last = update;
             });
@@ -128,12 +102,5 @@ var buildRanges = function(presses){
             console.log(ranges);
         });
     });
-
-
-
+    
 };
-
-//
-//db.find({}, function (err, update) {
-//    console.log(update);
-//});
