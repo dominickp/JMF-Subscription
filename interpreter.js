@@ -156,7 +156,12 @@ var postRanges = function(ranges, updatesToDelete){
                 });
                 //console.log(body);
             } else {
-                winston.log('error', {post_error:res.statusCode});
+                winston.log('error', {
+                    status_code:res.statusCode,
+                    body: res.body
+                });
+
+                console.log(res);
             }
         });
 };
