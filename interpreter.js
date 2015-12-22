@@ -161,7 +161,7 @@ var postRanges = function(ranges, updatesToDelete){
                     body: res.body
                 });
 
-                console.log(res);
+                //console.log(res);
             }
         });
 };
