@@ -93,7 +93,7 @@ var buildRanges = function(presses){
                             diffMs: currentTime,
                             diffSec: Math.round(currentTime/100),
                             diffMin: Math.round(currentTime/100/60),
-                            start: last.createdAt,
+                            start: last.createdAt.getTime(),
                             //end: last.createdAt,
                             updates: currentRange.length,
                             press:press
@@ -126,6 +126,7 @@ var buildRanges = function(presses){
 
             if(ranges.length > 0){
                 postRanges(ranges, updatesToDelete);
+                //console.log(ranges);
             }
 
 
