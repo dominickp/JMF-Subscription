@@ -6,7 +6,7 @@ var jasmine = require('gulp-jasmine');
 
 
 gulp.task('jshint', function(){
-    return gulp.src(['*.js', 'tests/**/*.js'])
+    return gulp.src(['src/**/*.js', 'tests/**/*.js'])
         .pipe(jshint())
         .pipe(jshint.reporter('jshint-stylish'));
 });
@@ -21,20 +21,10 @@ gulp.task('test', ['jasmine', 'jshint']);
 
 // ***************************************
 
-gulp.task('connect', function(){
-    connect.server({
-        root: 'dist',
-        livereload: true
-    });
+gulp.task('watch', function () {
+    gulp.task('src/**/*.js', ['test']);
 });
-
-//
-//gulp.task('watch', function(){
-//    gulp.watch('src/js/**/*.js', ['buildApp']);
-//    gulp.watch('src/css/**/*.css', ['buildCSS']);
-//    gulp.watch('src/**/*.html', ['moveHTML']);
-//});
 
 // *******************************************
 
-gulp.task('default', ['test', 'watch', 'connect']);
+gulp.task('default', ['test', 'watch']);

@@ -1,8 +1,8 @@
 // Require modules
 var http = require('http');
 var winston = require('winston');
-var Datastore = require('nedb')
-    , db = new Datastore({ filename: __dirname + '/db/server.db', timestampData: true, autoload: true });
+var Datastore = require('nedb'),
+    db = new Datastore({ filename: __dirname + '/db/server.db', timestampData: true, autoload: true });
 var fs = require('fs');
 var request = require('request');
 var argv = require('yargs')
@@ -47,6 +47,7 @@ var buildRanges = function(presses){
             var currentRange = [];
             var totalRemoved = 0;
             var updatesToDelete = [];
+            var newDiff, newClicks;
 
             var ranges = [];
 
@@ -65,11 +66,11 @@ var buildRanges = function(presses){
                         // Continue growing range
 
                         // Increment time
-                        var newDiff = Math.abs(update.createdAt-last.createdAt);
+                        newDiff = Math.abs(update.createdAt-last.createdAt);
                         currentTime += newDiff;
 
                         // Increment clicks
-                        var newClicks = Math.abs(update.ProductionCounter-last.ProductionCounter);
+                        newClicks = Math.abs(update.ProductionCounter-last.ProductionCounter);
                         currentClicks += newClicks;
 
 
@@ -77,11 +78,11 @@ var buildRanges = function(presses){
                     } else {
                         // end and start a new range
                         // Increment time
-                        var newDiff = Math.abs(update.createdAt-last.createdAt);
+                        newDiff = Math.abs(update.createdAt-last.createdAt);
                         currentTime += newDiff;
 
                         // Increment clicks
-                        var newClicks = Math.abs(update.ProductionCounter-last.ProductionCounter);
+                        newClicks = Math.abs(update.ProductionCounter-last.ProductionCounter);
                         currentClicks += newClicks;
 
 
@@ -150,7 +151,7 @@ var postRanges = function(ranges, updatesToDelete){
                        db.remove({ _id: id }, {}, function (err, numRemoved) {
                            // numRemoved = 1
                            if(err){
-                               winston.log('error', {removal_error:err})
+                               winston.log('error', {removal_error:err});
                            }
                        });
                    });
