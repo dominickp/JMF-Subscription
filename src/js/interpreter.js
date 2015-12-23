@@ -1,22 +1,27 @@
 // Require modules
 var http = require('http');
 var winston = require('winston');
-var Datastore = require('nedb'),
-    db = new Datastore({ filename: __dirname + '/../../db/server.db', timestampData: true, autoload: true });
+
 var fs = require('fs');
 var request = require('request');
-var argv = require('yargs')
-    .usage('Usage: $0 --range-endpoint [url]')
-    .demand(['range-endpoint'])
-    .argv;
 
-var range_endpoint = argv["range-endpoint"];
 
-var Interpreter = function () {
+
+var Interpreter = function (db, argv) {
+
 
     var model = this;
 
+    var range_endpoint = argv["range-endpoint"];
+
+
+
     model.init = function(){
+
+
+        // Prepare log file
+        //winston.add(winston.transports.File, {filename: __dirname + '/logs/interpreter.log'});
+
         model.findPresses(function(presses){
             model.buildRanges(presses, function(ranges, updatesToDelete){
                 model.postRanges(ranges, updatesToDelete, function(){
@@ -27,8 +32,6 @@ var Interpreter = function () {
     };
 
     model.findPresses = function(callback) {
-        // Prepare log file
-        winston.add(winston.transports.File, {filename: __dirname + '/logs/interpreter.log'});
 
         // Find presses
         db.find({}, {DeviceID: 1}, function (err, updates) {
@@ -186,4 +189,4 @@ var Interpreter = function () {
     };
 };
 
-module.exports = new Interpreter();
+module.exports = Interpreter;
