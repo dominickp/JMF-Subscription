@@ -16,7 +16,17 @@ var Interpreter = function () {
 
     var model = this;
 
-    model.findPresses = function() {
+    model.init = function(){
+        model.findPresses(function(presses){
+            model.buildRanges(presses, function(ranges, updatesToDelete){
+                model.postRanges(ranges, updatesToDelete, function(){
+                    console.log('Done with final callback');
+                });
+            });
+        });
+    };
+
+    model.findPresses = function(callback) {
         // Prepare log file
         winston.add(winston.transports.File, {filename: __dirname + '/logs/interpreter.log'});
 
@@ -33,12 +43,13 @@ var Interpreter = function () {
 
             console.log(presses);
 
-            model.buildRanges(presses);
+            //model.buildRanges(presses);
+            callback(presses);
 
         });
     };
 
-    model.buildRanges = function (presses) {
+    model.buildRanges = function (presses, callback) {
 
         Object.keys(presses).forEach(function (press) {
 
@@ -130,7 +141,8 @@ var Interpreter = function () {
                 });
 
                 if (ranges.length > 0) {
-                    model.postRanges(ranges, updatesToDelete);
+                    //model.postRanges(ranges, updatesToDelete);
+                    callback(ranges, updatesToDelete);
                     //console.log(ranges);
                 }
 
@@ -139,7 +151,7 @@ var Interpreter = function () {
         });
     };
 
-    model.postRanges = function (ranges, updatesToDelete) {
+    model.postRanges = function (ranges, updatesToDelete, callback) {
 
         request(range_endpoint,
             {json: true, body: {ranges: ranges}},
@@ -160,6 +172,7 @@ var Interpreter = function () {
                         });
                     });
                     //console.log(body);
+
                 } else {
                     winston.log('error', {
                         status_code: res.statusCode,
@@ -167,6 +180,8 @@ var Interpreter = function () {
                     });
                     //console.log(res);
                 }
+
+                callback();
             });
     };
 };
