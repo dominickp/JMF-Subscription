@@ -50,15 +50,15 @@ var discoverDevices = function(){
             // Attempt to parse the XML
             parseString(response_body, {trim: true, explicitChildren: true}, function (err, result) {
 
-                var device_nodes = result["JMF"].$$["Response"][0].$$["DeviceList"][0].$$["DeviceInfo"];
+                var device_nodes = result.JMF.$$.Response[0].$$.DeviceList[0].$$.DeviceInfo;
 
                 if(device_nodes){
                     // Get devices
                     device_nodes.forEach(function(device){
                         // Check that it is not the DFE itself
-                        if(device.$["ProductionCounter"]){
-                            devices.push(device.$["DeviceID"]);
-                            winston.log('info', 'Found Device ID: '+device.$["DeviceID"]);
+                        if(device.$.ProductionCounter){
+                            devices.push(device.$.DeviceID);
+                            winston.log('info', 'Found Device ID: '+device.$.DeviceID);
                         }
                     });
                 }
@@ -111,14 +111,14 @@ var subscribeDevices = function(devices){
                 // Attempt to parse the XML
                 parseString(response_body, {trim: true, explicitChildren: true}, function (err, result) {
 
-                    var subscribed = result["JMF"].$$["Response"][0].$["Subscribed"];
+                    var subscribed = result.JMF.$$.Response[0].$.Subscribed;
 
                     if(subscribed === 'true'){
                         winston.log('info', {result: device+' subscribed successfully.'});
                     } else {
                         winston.log('error', {
                             result: device+' could not be subscribed to.',
-                            body: result["JMF"].$$["Response"][0]
+                            body: result.JMF.$$.Response[0]
                         });
                     }
                 });

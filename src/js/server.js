@@ -7,8 +7,8 @@ var argv = require('yargs')
     .usage('Usage: $0 --port [num]')
     .demand(['port'])
     .argv;
-var Datastore = require('nedb')
-    , db = new Datastore({ filename: __dirname + '/db/server.db', timestampData: true, autoload: true });
+var Datastore = require('nedb'),
+    db = new Datastore({ filename: __dirname + '/db/server.db', timestampData: true, autoload: true });
 
 
 
@@ -40,23 +40,23 @@ function handleRequest(request, response){
                 winston.error("Parse error" + err);
             }
 
-            if(typeof result["JMF"]["Signal"][0]["DeviceInfo"] !== 'undefined'){
+            if(typeof result.JMF.Signal[0].DeviceInfo !== 'undefined'){
                 winston.log('info', {
-                        DeviceID: result["JMF"]["Signal"][0]["DeviceInfo"][0]["$"]["DeviceID"],
-                        DeviceStatus: result["JMF"]["Signal"][0]["DeviceInfo"][0]["$"]["DeviceStatus"],
-                        StatusDetails: result["JMF"]["Signal"][0]["DeviceInfo"][0]["$"]["StatusDetails"],
-                        ProductionCounter: result["JMF"]["Signal"][0]["DeviceInfo"][0]["$"]["ProductionCounter"]
+                        DeviceID: result.JMF.Signal[0].DeviceInfo[0].$.DeviceID,
+                        DeviceStatus: result.JMF.Signal[0].DeviceInfo[0].$.DeviceStatus,
+                        StatusDetails: result.JMF.Signal[0].DeviceInfo[0].$.StatusDetails,
+                        ProductionCounter: result.JMF.Signal[0].DeviceInfo[0].$.ProductionCounter
                     }
                 );
 
                 // Insert into database
                 var doc = {
-                    DeviceID: result["JMF"]["Signal"][0]["DeviceInfo"][0]["$"]["DeviceID"],
-                    DeviceStatus: result["JMF"]["Signal"][0]["DeviceInfo"][0]["$"]["DeviceStatus"],
-                    StatusDetails: result["JMF"]["Signal"][0]["DeviceInfo"][0]["$"]["StatusDetails"],
-                    SignalID: result["JMF"]["Signal"][0].$["ID"],
-                    SignalType: result["JMF"]["Signal"][0].$['xsi:type'],
-                    ProductionCounter: result["JMF"]["Signal"][0]["DeviceInfo"][0]["$"]["ProductionCounter"]
+                    DeviceID: result.JMF.Signal[0].DeviceInfo[0].$.DeviceID,
+                    DeviceStatus: result.JMF.Signal[0].DeviceInfo[0].$.DeviceStatus,
+                    StatusDetails: result.JMF.Signal[0].DeviceInfo[0].$.StatusDetails,
+                    SignalID: result.JMF.Signal[0].$.ID,
+                    SignalType: result.JMF.Signal[0].$['xsi:type'],
+                    ProductionCounter: result.JMF.Signal[0].DeviceInfo[0].$.ProductionCounter
                 };
 
                 db.insert(doc, function (err, newDoc) {   // Callback is optional
