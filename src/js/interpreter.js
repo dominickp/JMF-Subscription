@@ -162,7 +162,6 @@ var postRanges = function(ranges, updatesToDelete){
                     status_code:res.statusCode,
                     body: res.body
                 });
-
                 //console.log(res);
             }
         });

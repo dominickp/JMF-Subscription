@@ -22,7 +22,7 @@ gulp.task('test', ['jasmine', 'jshint']);
 // ***************************************
 
 gulp.task('watch', function () {
-    gulp.task('src/**/*.js', ['test']);
+    gulp.watch('src/**/*.js', ['test']);
 });
 
 // *******************************************
