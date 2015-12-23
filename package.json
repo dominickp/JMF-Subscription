@@ -26,6 +26,7 @@
     "yargs": "^3.31.0"
   },
   "devDependencies": {
+    "gulp-jasmine": "^2.2.1",
     "gulp-jshint": "^2.0.0",
     "jasmine": "^2.4.1",
     "jshint": "^2.9.1-rc2",

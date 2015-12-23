@@ -1,14 +1,9 @@
 var gulp = require('gulp');
 var jshint = require('gulp-jshint');
+var jasmine = require('gulp-jasmine');
 
 // *******************************************
 
-gulp.task('karma', function (done) {
-    new Server({
-        configFile: __dirname + '/karma.conf.js',
-        singleRun: true
-    }, done).start();
-});
 
 gulp.task('jshint', function(){
     return gulp.src(['*.js', 'tests/**/*.js'])
@@ -16,7 +11,13 @@ gulp.task('jshint', function(){
         .pipe(jshint.reporter('jshint-stylish'));
 });
 
-gulp.task('test', ['karma', 'jshint']);
+gulp.task('jasmine', function () {
+    return gulp.src('src/tests/**/*.js')
+        // gulp-jasmine works on filepaths so you can't have any plugins before it
+        .pipe(jasmine());
+});
+
+gulp.task('test', ['jasmine', 'jshint']);
 
 // ***************************************
 
