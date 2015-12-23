@@ -1,6 +1,9 @@
 # JMF-Subscription
 If you want to get some information from your Indigo/DFE, you can always send it a JMF. But if you are actively monitoring the status of the device, you're better off with a JMF subscription which will notify an HTTP endpoint when something changes. Below you'll find an example on how to implement a basic JMF subscription endpoint using Node.
 
+## Warning
+These docs are out of date for now. Still working on a better CLI interface.
+
 ## subscribe.js
 Use this script to search and subscribe to your JMF devices. Takes two arguments. '--idp' is the URL to your IDP worker (on your DFE) and should end with /jmf/. '--server' is the IP and port of your JMF server (see server.js).
 
