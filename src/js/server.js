@@ -8,7 +8,7 @@ var argv = require('yargs')
     .demand(['port'])
     .argv;
 var Datastore = require('nedb'),
-    db = new Datastore({ filename: __dirname + '/db/server.db', timestampData: true, autoload: true });
+    db = new Datastore({ filename: __dirname + '/../../db/server.db', timestampData: true, autoload: true });
 
 
 // Prepare log file

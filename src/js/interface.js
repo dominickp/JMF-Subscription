@@ -7,7 +7,7 @@ var Datastore = require('nedb'),
 
 if(argv.action == 'interpreter'){
 
-    var argv = require('yargs')
+    argv = require('yargs')
         .usage('Usage: $0 --range-endpoint [url]')
         .demand(['range-endpoint'])
         .argv;

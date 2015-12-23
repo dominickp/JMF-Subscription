@@ -149,7 +149,6 @@ var Interpreter = function (db, argv) {
                     //console.log(ranges);
                 }
 
-
             });
         });
     };
