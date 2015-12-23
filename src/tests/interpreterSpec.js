@@ -9,15 +9,15 @@ describe("interpreter", function() {
         // Load some dummy data into the database
         test_db.insert([
             {DeviceID: 'Press1', DeviceStatus: "Idle",StatusDetails: "Indigo: Ready", SignalID: "SJDFSpy_Detail-Press1",
-                SignalType: "SignalStatus",ProductionCounter: 35098505, createdAt:new Date('December 17, 2015 03:24:00')},
+                SignalType: "SignalStatus",ProductionCounter: 35092505, createdAt:new Date('December 17, 2015 03:24:00')},
             {DeviceID: 'Press1', DeviceStatus: "Running",StatusDetails: "Indigo: Printing", SignalID: "SJDFSpy_Detail-Press1",
-                SignalType: "SignalStatus",ProductionCounter: 35092505, createdAt:new Date('December 17, 2015 03:44:00')},
+                SignalType: "SignalStatus",ProductionCounter: 35098505, createdAt:new Date('December 17, 2015 03:25:30')},
             {DeviceID: 'Press1', DeviceStatus: "Idle",StatusDetails: "Indigo: Ready", SignalID: "SJDFSpy_Detail-Press1",
-                SignalType: "SignalStatus",ProductionCounter: 35098505, createdAt:new Date('December 17, 2015 03:24:00')},
+                SignalType: "SignalStatus",ProductionCounter: 35098505, createdAt:new Date('December 17, 2015 03:27:00')},
+            {DeviceID: 'Press1', DeviceStatus: "Running",StatusDetails: "Indigo: Printing", SignalID: "SJDFSpy_Detail-Press1",
+                SignalType: "SignalStatus",ProductionCounter: 35100505, createdAt:new Date('December 17, 2015 03:28:30')},
             {DeviceID: 'Press1', DeviceStatus: "Idle",StatusDetails: "Indigo: Ready", SignalID: "SJDFSpy_Detail-Press1",
-                SignalType: "SignalStatus",ProductionCounter: 35098505, createdAt:new Date('December 17, 2015 03:24:00')},
-            {DeviceID: 'Press1', DeviceStatus: "Idle",StatusDetails: "Indigo: Ready", SignalID: "SJDFSpy_Detail-Press1",
-                SignalType: "SignalStatus",ProductionCounter: 35098505, createdAt:new Date('December 17, 2015 03:24:00')}
+                SignalType: "SignalStatus",ProductionCounter: 35100505, createdAt:new Date('December 17, 2015 03:29:00')}
         ], function (err, newDocs) {
             // Two documents were inserted in the database
             // newDocs is an array with these documents, augmented with their _id
@@ -64,7 +64,29 @@ describe("interpreter", function() {
 
         it("should get some ranges", function(){
             expect(ranges).not.toBeNull();
+            expect(ranges.length).toBe(4);
             //expect(Object.keys(presses).length).toBeGreaterThan(0);
+        });
+
+        it("should calculate elapsed time in milliseconds", function(){
+            var mockedElapsedMsTimes = [90000,90000,90000,30000];
+            ranges.forEach(function(range, index){
+                expect(range.diffMs).toBe(mockedElapsedMsTimes[index]);
+            });
+        });
+
+        it("should calculate elapsed time in seconds", function(){
+            var mockedElapsedSecTimes = [90,90,90,30];
+            ranges.forEach(function(range, index){
+                expect(range.diffSec).toBe(mockedElapsedSecTimes[index]);
+            });
+        });
+
+        it("should calculate elapsed time in minutes", function(){
+            var mockedElapsedMinTimes = [1.5,1.5,1.5,0.5];
+            ranges.forEach(function(range, index){
+                expect(range.diffMin).toBe(mockedElapsedMinTimes[index]);
+            });
         });
 
     });
