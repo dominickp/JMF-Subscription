@@ -1,24 +1,16 @@
 // Require modules
 var http = require('http');
 var winston = require('winston');
-
 var fs = require('fs');
 var request = require('request');
 
-
-
 var Interpreter = function (db, argv) {
-
 
     var model = this;
 
     var range_endpoint = argv["range-endpoint"];
 
-
-
     model.init = function(){
-
-
         // Prepare log file
         //winston.add(winston.transports.File, {filename: __dirname + '/logs/interpreter.log'});
 
@@ -43,8 +35,6 @@ var Interpreter = function (db, argv) {
                     presses[update.DeviceID] = 1;
                 }
             });
-
-            console.log(presses);
 
             //model.buildRanges(presses);
             callback(presses);
@@ -92,7 +82,6 @@ var Interpreter = function (db, argv) {
                             newClicks = Math.abs(update.ProductionCounter - last.ProductionCounter);
                             currentClicks += newClicks;
 
-
                         } else {
                             // end and start a new range
                             // Increment time
@@ -102,7 +91,6 @@ var Interpreter = function (db, argv) {
                             // Increment clicks
                             newClicks = Math.abs(update.ProductionCounter - last.ProductionCounter);
                             currentClicks += newClicks;
-
 
                             // End the last one since this is new
                             ranges.push({
@@ -127,7 +115,6 @@ var Interpreter = function (db, argv) {
                             currentTime = 0;
                             currentRange = [];
                         }
-
                     }
 
                     currentRange.push(update._id);
@@ -146,7 +133,6 @@ var Interpreter = function (db, argv) {
                 if (ranges.length > 0) {
                     //model.postRanges(ranges, updatesToDelete);
                     callback(ranges, updatesToDelete);
-                    //console.log(ranges);
                 }
 
             });
@@ -173,14 +159,11 @@ var Interpreter = function (db, argv) {
                             });
                         });
                     });
-                    //console.log(body);
-
                 } else {
                     winston.log('error', {
                         status_code: res.statusCode,
                         body: res.body
                     });
-                    //console.log(res);
                 }
 
                 callback();
