@@ -18,3 +18,17 @@ if(argv.action == 'interpreter'){
 }
 
 
+
+if(argv.action == 'subscribe'){
+
+    argv = require('yargs')
+        .usage('Usage: $0 --idp [host] --server [ip:port]')
+        .demand(['idp', 'server'])
+        .argv;
+
+    var Subscribe = require("./subscribe");
+    var subscribe = new Subscribe(db, argv);
+    subscribe.init();
+}
+
+
