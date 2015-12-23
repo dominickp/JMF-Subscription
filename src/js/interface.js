@@ -17,8 +17,6 @@ if(argv.action == 'interpreter'){
     interpreter.init();
 }
 
-
-
 if(argv.action == 'subscribe'){
 
     argv = require('yargs')
@@ -29,6 +27,18 @@ if(argv.action == 'subscribe'){
     var Subscribe = require("./subscribe");
     var subscribe = new Subscribe(db, argv);
     subscribe.init();
+}
+
+if(argv.action == 'server'){
+
+    argv = require('yargs')
+        .usage('Usage: $0 --port [num]')
+        .demand(['port'])
+        .argv;
+
+    var Server = require("./server");
+    var server = new Server(db, argv);
+    server.init();
 }
 
 
