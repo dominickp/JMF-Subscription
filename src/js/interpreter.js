@@ -1,7 +1,7 @@
 // Require modules
-var http = require('http');
+//var http = require('http');
 var winston = require('winston');
-var fs = require('fs');
+//var fs = require('fs');
 var request = require('request');
 
 var Interpreter = function (db, argv) {
@@ -71,7 +71,7 @@ var Interpreter = function (db, argv) {
                         // All others
 
                         // Try to build a range
-                        if (update.StatusDetails == last.StatusDetails) {
+                        if (update.StatusDetails === last.StatusDetails) {
                             // Continue growing range
 
                             // Increment time
@@ -143,15 +143,15 @@ var Interpreter = function (db, argv) {
 
         request(range_endpoint,
             {json: true, body: {ranges: ranges}},
-            function (err, res, body) {
+            function (err, res) {
                 // `body` is a js object if request was successful
 
-                if (!err && res.statusCode == 200) {
+                if (!err && res.statusCode === 200) {
                     // Need to delete updates which have been logged as ranges
                     updatesToDelete.forEach(function (updateRange) {
                         updateRange.forEach(function (id) {
                             // Delete from data store
-                            db.remove({_id: id}, {}, function (err, numRemoved) {
+                            db.remove({_id: id}, {}, function (err) {
                                 // numRemoved = 1
                                 if (err) {
                                     winston.log('error', {removal_error: err});

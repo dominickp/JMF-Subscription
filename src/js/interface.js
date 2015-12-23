@@ -5,7 +5,7 @@ var argv = require('yargs')
 var Datastore = require('nedb'),
     db = new Datastore({ filename: __dirname + '/../../db/server.db', timestampData: true, autoload: true });
 
-if(argv.action == 'interpreter'){
+if(argv.action === 'interpreter'){
 
     argv = require('yargs')
         .usage('Usage: $0 --range-endpoint [url]')
@@ -17,7 +17,7 @@ if(argv.action == 'interpreter'){
     interpreter.init();
 }
 
-if(argv.action == 'subscribe'){
+if(argv.action === 'subscribe'){
 
     argv = require('yargs')
         .usage('Usage: $0 --idp [host] --server [ip:port]')
@@ -29,7 +29,7 @@ if(argv.action == 'subscribe'){
     subscribe.init();
 }
 
-if(argv.action == 'server'){
+if(argv.action === 'server'){
 
     argv = require('yargs')
         .usage('Usage: $0 --port [num]')

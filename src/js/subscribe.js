@@ -1,5 +1,5 @@
 // Require modules
-var request = require('request').debug = false;
+//var request = require('request').debug = false;
 var winston = require('winston');
 var parseString = require('xml2js').parseString;
 
@@ -49,7 +49,7 @@ var Subscribe = function (db, argv) {
         };
 
         require("request")(options, function (error, response, response_body) {
-            if (!error && response.statusCode == 200) {
+            if (!error && response.statusCode === 200) {
                 // Log the body of the response
                 //winston.info('Response', { body: response_body });
 
@@ -110,7 +110,7 @@ var Subscribe = function (db, argv) {
             winston.log('info', {http: idp_worker + device});
 
             require("request")(options, function (error, response, response_body) {
-                if (!error && response.statusCode == 200) {
+                if (!error && response.statusCode === 200) {
                     // Log the body of the response (XML)
                     //winston.info('Response', { body: response_body });
 

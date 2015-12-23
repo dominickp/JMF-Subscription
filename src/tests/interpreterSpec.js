@@ -18,10 +18,7 @@ describe("interpreter", function() {
                 SignalType: "SignalStatus",ProductionCounter: 35100505, createdAt:new Date('December 17, 2015 03:28:30')},
             {DeviceID: 'Press1', DeviceStatus: "Idle",StatusDetails: "Indigo: Ready", SignalID: "SJDFSpy_Detail-Press1",
                 SignalType: "SignalStatus",ProductionCounter: 35100505, createdAt:new Date('December 17, 2015 03:29:00')}
-        ], function (err, newDocs) {
-            // Two documents were inserted in the database
-            // newDocs is an array with these documents, augmented with their _id
-        });
+        ]);
 
         var Interpreter = require("./../js/interpreter");
         interpreter = new Interpreter(test_db, 'endpoint');

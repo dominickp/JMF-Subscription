@@ -2,11 +2,9 @@
 var http = require('http');
 var winston = require('winston');
 var parseString = require('xml2js').parseString;
-var util = require('util');
-
+//var util = require('util');
 
 var Server = function (db, argv) {
-
 
     var model = this;
 
@@ -42,8 +40,7 @@ var Server = function (db, argv) {
             parseString(body, {trim: true}, function (err, result) {
                 // Log the body of the request
                 //var jsonResult = JSON.parse(result);
-
-                var fullResult = util.inspect(result, false, null);
+                //var fullResult = util.inspect(result, false, null);
 
                 if (err) {
                     winston.error("Parse error" + err);
