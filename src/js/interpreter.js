@@ -64,11 +64,8 @@ var Interpreter = function (db, argv) {
                 updates.forEach(function (update, index) {
                     //console.log(index);
 
-                    if (index === 0) {
-                        // First, do nothing
-
-                    } else {
-                        // All others
+                    if (index !== 0){
+                        // Not first
 
                         // Try to build a range
                         if (update.StatusDetails === last.StatusDetails) {
