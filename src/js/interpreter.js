@@ -90,7 +90,7 @@ var Interpreter = function (db, argv) {
                             currentClicks += newClicks;
 
                             // End the last one since this is new
-                            ranges.push({
+                            var range = {
                                 statusDetails: last.StatusDetails,
                                 id: last._id,
                                 elapsedClicks: currentClicks,
@@ -101,7 +101,11 @@ var Interpreter = function (db, argv) {
                                 //end: last.createdAt,
                                 updates: currentRange.length,
                                 press: press
-                            });
+                            };
+
+                            ranges.push(range);
+
+                            //console.log(range.diffSec);
 
                             //console.log('remove'+currentRange.length);
                             totalRemoved += currentRange.length;
