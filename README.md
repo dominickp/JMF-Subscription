@@ -71,8 +71,8 @@ You'll want to run the interpreter in an interval using something like cron, lik
 Here are some example reports you can use this data for. You'll have to put these together yourself.
 
 ![Hours printing per day](https://i.imgur.com/38bRPFB.png)
-![Printing distribution](https://i.imgur.com/Tj8OAvB.png)
-![Activity](https://i.imgur.com/vTWFxxh.png)
+<img src="https://i.imgur.com/vTWFxxh.png" width="200">
+<img src="https://i.imgur.com/2bZAJDD.png" width="440">
 
 ## Info
 For more information, see this post for now: http://forum.enfocus.com/viewtopic.php?f=13&t=761
