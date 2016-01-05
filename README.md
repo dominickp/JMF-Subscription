@@ -46,6 +46,21 @@ info:  press=HP-Indigo-BUDPB, updates=276, ranges=165, totalRemoved=275
 
 ```
 
+Here is an example HTTP request the interpreter would send to the range-endpoint:
+
+```
+{"ranges":[ 
+    
+    { "statusDetails": "Indigo: Ready",
+    "elapsedClicks": 0,
+    "diffMs": 60000,
+    "start": 1452006000000,
+    "end": 1452006060000,
+    "press": "HP-Indigo-BUDPB" }
+    ]
+}
+```
+
 ## Info
 For more information, see this post for now: http://forum.enfocus.com/viewtopic.php?f=13&t=761
 
