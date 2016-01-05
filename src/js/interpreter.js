@@ -57,6 +57,7 @@ var Interpreter = function (db, argv) {
                 var totalRemoved = 0;
                 var updatesToDelete = [];
                 var newDiff, newClicks;
+                var currentRangeStart;
 
                 var ranges = [];
 
@@ -64,9 +65,10 @@ var Interpreter = function (db, argv) {
                 updates.forEach(function (update, index) {
                     //console.log(index);
 
-                    if (index !== 0){
+                    if (index === 0) {
                         // Not first
-
+                        currentRangeStart = update;
+                    } else {
                         // Try to build a range
                         if (update.StatusDetails === last.StatusDetails) {
                             // Continue growing range
@@ -97,8 +99,8 @@ var Interpreter = function (db, argv) {
                                 diffMs: currentTime,
                                 diffSec: currentTime / 1000,
                                 diffMin: currentTime / 1000 / 60,
-                                start: last.createdAt.getTime(),
-                                //end: last.createdAt,
+                                start: currentRangeStart.createdAt.getTime(),
+                                end: update.createdAt.getTime(),
                                 updates: currentRange.length,
                                 press: press
                             };
@@ -112,6 +114,8 @@ var Interpreter = function (db, argv) {
 
                             updatesToDelete.push(currentRange);
 
+                            currentRangeStart = update;
+
                             currentClicks = 0;
                             currentTime = 0;
                             currentRange = [];
@@ -124,7 +128,7 @@ var Interpreter = function (db, argv) {
                     last = update;
                 });
 
-                winston.log('info', {
+                winston.log('debug', {
                     press: press,
                     updates: updates.length,
                     ranges: ranges.length,
