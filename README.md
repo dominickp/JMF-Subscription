@@ -32,8 +32,11 @@ info:  DeviceID=192.168.1.45, DeviceStatus=Idle, StatusDetails=Indigo: Ready, Pr
 info:  DeviceID=192.168.1.45, DeviceStatus=Running, StatusDetails=Indigo: Printing, ProductionCounter=35089299
 
 ```
-
-The server also saves the JMF details in a simple nebd database. You can use pm2 to start the server on boot.
+The server also saves the JMF details in a simple nebd database. You can use pm2 to start the server on boot:
+```
+pm2 start /var/node/JMF-Subscription/src/js/interface.js -- --action server --port 9090
+pm2 save
+```
 
 ## interpreter
 This script reads the JMF updates from the server above from the database and converts them to usable time ranges that can be reported upon. It also posts those ranges in a JSON request to another endpoint and if successful, deletes them from the local data store. It will always leave the last update so the next range has something to start with. Takes one argument. '--range-endpoint' is the URI of the endpoint that accepts the ranges.
