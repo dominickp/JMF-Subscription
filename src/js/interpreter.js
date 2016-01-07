@@ -3,7 +3,7 @@
 var winston = require('winston');
 //var fs = require('fs');
 var request = require('request');
-var RangeAssembler = require('./range_assembler');
+var RangeAssembler = require('./rangeAssembler');
 
 var Interpreter = function (db, argv) {
 
