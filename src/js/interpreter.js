@@ -3,6 +3,7 @@
 var winston = require('winston');
 //var fs = require('fs');
 var request = require('request');
+var RangeAssembler = require('./range_assembler');
 
 var Interpreter = function (db, argv) {
 
@@ -49,90 +50,72 @@ var Interpreter = function (db, argv) {
             // Find one presses updates at a time
             db.find({DeviceID: press}).sort({createdAt: 1}).exec(function (err, updates) {
                 // Set some starter variables
-                var last;
 
-                var currentClicks = 0;
-                var currentTime = 0;
-                var currentRange = [];
-                var totalRemoved = 0;
-                var updatesToDelete = [];
-                var newDiff, newClicks;
-                var currentRangeStart;
 
                 var ranges = [];
+
+                var updatesToDelete = [];
+
+                var assembler = new RangeAssembler();
+
+
 
                 // Loop through each update
                 updates.forEach(function (update, index) {
                     //console.log(index);
 
+                    //console.log(update);
+
+
+
+
                     if (index === 0) {
-                        // Not first
-                        currentRangeStart = update;
+
+                        // First loop,  no basis for range
+                        assembler.updates.push(update);
+
+                        //console.log(assembler.updates);
+
                     } else {
-                        // Try to build a range
-                        if (update.StatusDetails === last.StatusDetails) {
-                            // Continue growing range
 
-                            // Increment time
-                            newDiff = Math.abs(update.createdAt - last.createdAt);
-                            currentTime += newDiff;
-
-                            // Increment clicks
-                            newClicks = Math.abs(update.ProductionCounter - last.ProductionCounter);
-                            currentClicks += newClicks;
+                        // Now at least have an existing update
+                        if(assembler.getFirstUpdate().StatusDetails === update.StatusDetails){
+                            // Continue range
+                            assembler.updates.push(update);
 
                         } else {
-                            // end and start a new range
-                            // Increment time
-                            newDiff = Math.abs(update.createdAt - last.createdAt);
-                            currentTime += newDiff;
+                            // End range
+                            assembler.updates.push(update);
 
-                            // Increment clicks
-                            newClicks = Math.abs(update.ProductionCounter - last.ProductionCounter);
-                            currentClicks += newClicks;
 
-                            // End the last one since this is new
-                            var range = {
-                                statusDetails: last.StatusDetails,
-                                id: last._id,
-                                elapsedClicks: currentClicks,
-                                diffMs: currentTime,
-                                diffSec: currentTime / 1000,
-                                diffMin: currentTime / 1000 / 60,
-                                start: currentRangeStart.createdAt.getTime(),
-                                end: update.createdAt.getTime(),
-                                updates: currentRange.length,
-                                press: press
-                            };
-
+                            // Push into main array
+                            var range = assembler.getRange();
                             ranges.push(range);
 
-                            //console.log(range.diffSec);
+                            // Start new assembler
+                            assembler = new RangeAssembler();
 
-                            //console.log('remove'+currentRange.length);
-                            totalRemoved += currentRange.length;
+                            // This update becomes the start of the next range
+                            assembler.updates.push(update);
 
-                            updatesToDelete.push(currentRange);
-
-                            currentRangeStart = update;
-
-                            currentClicks = 0;
-                            currentTime = 0;
-                            currentRange = [];
                         }
                     }
 
-                    currentRange.push(update._id);
 
-                    // Set for next in the loop
-                    last = update;
+                    // Never delete the last one
+                    if(index !== (updates.length-1)){
+                        updatesToDelete.push(update);
+                    }
+
+
+
                 });
 
                 winston.log('debug', {
                     press: press,
                     updates: updates.length,
                     ranges: ranges.length,
-                    totalRemoved: totalRemoved
+                    totalRemoved: updatesToDelete.length
                 });
 
                 if (ranges.length > 0) {
