@@ -16,8 +16,8 @@ var Interpreter = function (db, argv) {
         //winston.add(winston.transports.File, {filename: __dirname + '/logs/interpreter.log'});
 
         model.findPresses(function(presses){
-            model.buildRanges(presses, function(ranges, updatesToDelete){
-                model.postRanges(ranges, updatesToDelete, function(){
+            model.buildRanges(presses, function(ranges, assemblers){
+                model.postRanges(ranges, assemblers, function(){
                     console.log('Done with final callback');
                 });
             });
@@ -51,6 +51,7 @@ var Interpreter = function (db, argv) {
             db.find({DeviceID: press}).sort({createdAt: 1}).exec(function (err, updates) {
                 // Set some starter variables
                 var ranges = [];
+                var assemblers = [];
                 var updatesToDelete = [];
                 var assembler = new RangeAssembler();
 
@@ -59,31 +60,34 @@ var Interpreter = function (db, argv) {
 
                     if (index === 0) {
                         // First loop, no basis for range
-                        assembler.updates.push(update);
+                        assembler.addUpdate(update);
                     } else {
                         // Now at least have an existing update
                         if(assembler.getFirstUpdate().StatusDetails === update.StatusDetails){
                             // Continue range
-                            assembler.updates.push(update);
+                            assembler.addUpdate(update);
                         } else {
                             // End range
-                            assembler.updates.push(update);
+                            assembler.addUpdate(update);
 
                             // Push into main array
                             var range = assembler.getRange();
                             ranges.push(range);
+                            assemblers.push(assembler);
 
                             // Start new assembler
                             assembler = new RangeAssembler();
 
                             // This update becomes the start of the next range
-                            assembler.updates.push(update);
+                            assembler.addUpdate(update);
                         }
                     }
 
                     // Never delete the last one
                     if(index !== (updates.length-1)){
-                        updatesToDelete.push(update);
+                        updatesToDelete.push(update); // need it do delete the correct amount
+                        // only want to delete if it is a complete range, but never the last one
+                        // Should be sending in an array of updates, not the updates themselves
                     }
 
                 });
@@ -97,15 +101,16 @@ var Interpreter = function (db, argv) {
 
                 if (ranges.length > 0) {
                     //model.postRanges(ranges, updatesToDelete);
-                    callback(ranges, updatesToDelete);
+                    callback(ranges, assemblers);
                 }
 
             });
         });
     };
 
-    model.postRanges = function (ranges, updatesToDelete, callback) {
+    model.postRanges = function (ranges, assemblers, callback) {
 
+        var removed = 0;
         request(range_endpoint,
             {json: true, body: {ranges: ranges}},
             function (err, res) {
@@ -113,16 +118,33 @@ var Interpreter = function (db, argv) {
 
                 if (!err && res.statusCode === 200) {
                     // Need to delete updates which have been logged as ranges
-                    updatesToDelete.forEach(function (updateRange) {
-                        updateRange.forEach(function (id) {
+                    assemblers.forEach(function(assembler, assemblersIndex) {
+                        assembler.updates.forEach(function(update, updateIndex) {
                             // Delete from data store
-                            db.remove({_id: id}, {}, function (err) {
-                                // numRemoved = 1
-                                if (err) {
-                                    winston.log('error', {removal_error: err});
-                                }
-                            });
+                            // Check for last
+                            if(assemblersIndex === (assemblers.length-1) && updateIndex === (assembler.updates.length-1)){
+                                // Don't remove
+                            } else {
+                                db.remove({_id: update._id}, {}, function (err) {
+                                    // numRemoved = 1
+                                    if (err) {
+                                        winston.log('error', {removal_error: err});
+                                    } else {
+                                        removed = removed+1;
+                                        //console.log(numRemoved);
+                                        //
+                                        //if(removed === 13){
+                                        //    db.find({}, function (err, updates) {
+                                        //        updates.forEach(function(update){
+                                        //            console.log(update._id, update.DeviceID, update.createdAt);
+                                        //        });
+                                        //    });
+                                        //}
+                                    }
+                                });
+                            }
                         });
+
                     });
                 } else {
                     winston.log('error', {
@@ -131,7 +153,8 @@ var Interpreter = function (db, argv) {
                     });
                 }
 
-                callback();
+                callback(removed);
+
             });
     };
 };

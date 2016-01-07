@@ -1,6 +1,7 @@
 describe("interpreter", function() {
 
-    var interpreter;
+    var interpreter, db, ranges, assemblers;
+
 
     beforeEach(function(){
 
@@ -25,11 +26,15 @@ describe("interpreter", function() {
             {DeviceID: 'Press2', DeviceStatus: "Idle",StatusDetails: "Indigo: Ready",       SignalID: "SJDFSpy_Detail-Press2", SignalType: "SignalStatus",ProductionCounter: 25100605, createdAt:new Date('December 17, 2015 03:45:00')},
             {DeviceID: 'Press2', DeviceStatus: "Idle",StatusDetails: "Indigo: Ready",       SignalID: "SJDFSpy_Detail-Press2", SignalType: "SignalStatus",ProductionCounter: 25100605, createdAt:new Date('December 17, 2015 03:50:00')},
             {DeviceID: 'Press2', DeviceStatus: "Running",StatusDetails: "Indigo: Printing", SignalID: "SJDFSpy_Detail-Press2", SignalType: "SignalStatus",ProductionCounter: 25100605, createdAt:new Date('December 17, 2015 03:55:00')},
-            {DeviceID: 'Press2', DeviceStatus: "Idle",StatusDetails: "Indigo: Ready",       SignalID: "SJDFSpy_Detail-Press2", SignalType: "SignalStatus",ProductionCounter: 25100705, createdAt:new Date('December 17, 2015 04:00:00')}
+            {DeviceID: 'Press2', DeviceStatus: "Idle",StatusDetails: "Indigo: Ready",       SignalID: "SJDFSpy_Detail-Press2", SignalType: "SignalStatus",ProductionCounter: 25100705, createdAt:new Date('December 17, 2015 04:00:00')},
+            {DeviceID: 'Press2', DeviceStatus: "Idle",StatusDetails: "Indigo: Ready",       SignalID: "SJDFSpy_Detail-Press2", SignalType: "SignalStatus",ProductionCounter: 25100705, createdAt:new Date('December 17, 2015 04:05:00')},
+            {DeviceID: 'Press2', DeviceStatus: "Idle",StatusDetails: "Indigo: Ready",       SignalID: "SJDFSpy_Detail-Press2", SignalType: "SignalStatus",ProductionCounter: 25100705, createdAt:new Date('December 17, 2015 04:05:00')}
         ]);
 
         var Interpreter = require("./../js/interpreter");
-        interpreter = new Interpreter(test_db, 'endpoint');
+        interpreter = new Interpreter(test_db, {"range-endpoint": 'http://insight.dev/switch-api/jmf-spy/add-ranges'});
+
+        db = test_db;
 
     });
 
@@ -54,13 +59,18 @@ describe("interpreter", function() {
 
     describe("buildRanges", function() {
 
-        var ranges, updatesToDelete;
+        var dbUpdates;
 
         beforeEach(function(done){
 
-            interpreter.buildRanges(presses, function(foundRanges, foundUpdatesToDelete){
+            interpreter.buildRanges(presses, function(foundRanges, foundAssemblers){
                 ranges = foundRanges;
-                updatesToDelete = foundUpdatesToDelete;
+                assemblers = foundAssemblers;
+                done();
+            });
+
+            db.find({}, function (err, updates) {
+                dbUpdates = updates;
                 done();
             });
 
@@ -114,5 +124,52 @@ describe("interpreter", function() {
                 expect(range.start).toBeLessThan(range.end);
             });
         });
+
+        it("should only remove updates where a complete range exists", function(){
+            expect(dbUpdates.length).toBe(20);
+
+            var updates_to_remove = 0;
+            assemblers.forEach(function(assembler){
+                assembler.updates.forEach(function(){
+                    updates_to_remove++;
+                });
+            });
+            expect(updates_to_remove).toBe(14);
+
+            //console.log(ranges);
+        });
+
+
     });
+
+
+
+    describe("postRanges", function(){
+
+        var dbUpdatesRemaining;
+
+        var removed;
+
+
+        beforeEach(function(done){
+
+
+            interpreter.postRanges(ranges, assemblers, function(foundRemoved){
+                removed = foundRemoved;
+                db.find({}, function (err, updates) {
+                    dbUpdatesRemaining = updates;
+                    done();
+                });
+            });
+        });
+
+
+        xit("should delete all ranges accounted for, always leaving the last one", function(){
+
+            expect(removed).toBe(16);
+        });
+
+
+    });
+
 });

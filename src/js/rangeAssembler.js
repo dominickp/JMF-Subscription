@@ -4,6 +4,12 @@ var RangeAssembler = function () {
 
     model.updates = [];
 
+    model.addUpdate = function(update){
+
+        // Check for bad data
+        model.updates.push(update);
+    };
+
     model.getFirstUpdate = function(){
         return model.updates[0];
     };
