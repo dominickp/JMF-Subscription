@@ -50,43 +50,24 @@ var Interpreter = function (db, argv) {
             // Find one presses updates at a time
             db.find({DeviceID: press}).sort({createdAt: 1}).exec(function (err, updates) {
                 // Set some starter variables
-
-
                 var ranges = [];
-
                 var updatesToDelete = [];
-
                 var assembler = new RangeAssembler();
-
-
 
                 // Loop through each update
                 updates.forEach(function (update, index) {
-                    //console.log(index);
-
-                    //console.log(update);
-
-
-
 
                     if (index === 0) {
-
-                        // First loop,  no basis for range
+                        // First loop, no basis for range
                         assembler.updates.push(update);
-
-                        //console.log(assembler.updates);
-
                     } else {
-
                         // Now at least have an existing update
                         if(assembler.getFirstUpdate().StatusDetails === update.StatusDetails){
                             // Continue range
                             assembler.updates.push(update);
-
                         } else {
                             // End range
                             assembler.updates.push(update);
-
 
                             // Push into main array
                             var range = assembler.getRange();
@@ -97,17 +78,13 @@ var Interpreter = function (db, argv) {
 
                             // This update becomes the start of the next range
                             assembler.updates.push(update);
-
                         }
                     }
-
 
                     // Never delete the last one
                     if(index !== (updates.length-1)){
                         updatesToDelete.push(update);
                     }
-
-
 
                 });
 
