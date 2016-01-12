@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/dominickp/JMF-Subscription#readme",
   "dependencies": {
+    "codecov.io": "^0.1.6",
     "fs-extra": "^0.26.3",
     "gulp": "^3.9.0",
     "jshint": "^2.8.0",
