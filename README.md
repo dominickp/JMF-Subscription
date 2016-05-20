@@ -1,14 +1,18 @@
 # JMF-Subscription
 If you want to get some information from your Indigo/DFE, you can always send it a JMF. But if you are actively monitoring the status of the device, you're better off with a JMF subscription which will notify an HTTP endpoint when something changes. Below you'll find an example on how to implement a basic JMF subscription endpoint using Node.
 
-## Interface
-For now, interface.js is the endpoint for CLI operations. You have to specify an --action, described below. 
+## Usage
+
+```
+npm install jmf-subscription -g
+jmf-spy --action=[action]
+```
 
 ## subscribe
 Use this script to search and subscribe to your JMF devices. Takes two arguments. '--idp' is the URL to your IDP worker (on your DFE) and should end with /jmf/. '--server' is the IP and port of your JMF server (see server.js).
 
 ```
-dominick$ node src/js/interface.js --action=subscribe --idp http://192.168.1.40:8080/dpp/jmf/ --server http://192.168.1.70:9090
+dominick$ jmf-spy --action=subscribe --idp http://192.168.1.40:8080/dpp/jmf/ --server http://192.168.1.70:9090
 info: Found Device ID: 192.168.1.45
 info: Found Device ID: HP-Indigo-BUDPB
 info: 2 two presses found.
@@ -22,7 +26,7 @@ info:  result=192.168.1.45 subscribed successfully.
 This simple server opens a port and listens for subscription events from the JMF devices. Takes one argument. '--port' is the port the server should listen on.
 
 ```
-dominick$ node src/js/interface.js --action=server --port=9090
+dominick$ jmf-spy --action=server --port=9090
 Server listening on: http://localhost:9090
 info:  DeviceID=HP-Indigo-BUDPB, DeviceStatus=Running, StatusDetails=Indigo: Printing, ProductionCounter=49942091
 info:  DeviceID=HP-Indigo-BUDPB, DeviceStatus=Running, StatusDetails=Indigo: Printing, ProductionCounter=49942098
@@ -42,7 +46,7 @@ pm2 save
 This script reads the JMF updates from the server above from the database and converts them to usable time ranges that can be reported upon. It also posts those ranges in a JSON request to another endpoint and if successful, deletes them from the local data store. It will always leave the last update so the next range has something to start with. Takes one argument. '--range-endpoint' is the URI of the endpoint that accepts the ranges.
 
 ```
-dominick$ node src/js/interface.js --action=interpreter --range-endpoint=http://insight.dev/switch-api/jmf-spy/add-ranges
+dominick$ node jmf-spy --action=interpreter --range-endpoint=http://insight.dev/switch-api/jmf-spy/add-ranges
 [ '192.168.1.45': 1, 'HP-Indigo-BUDPB': 1 ]
 info:  press=192.168.1.45, updates=563, ranges=178, totalRemoved=561
 info:  press=HP-Indigo-BUDPB, updates=276, ranges=165, totalRemoved=275
