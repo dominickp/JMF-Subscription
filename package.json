@@ -1,6 +1,6 @@
 {
   "name": "jmf-subscription",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "JMF Server in Node that also handles subscriptions and interpreting of JDF/JMF messages.",
   "main": "./src/js/interface.js",
   "scripts": {
