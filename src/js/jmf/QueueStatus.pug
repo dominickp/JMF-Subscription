@@ -1,5 +1,5 @@
 extends ./JMF.pug
 
 block query
-    Query(Query ID="JDFSpy_QueryStatus-"+device_id+jmf_server Type="QueueStatus" xsi:type="QueryQueueStatus")
+    Query(ID="JDFSpy_QueryStatus-"+device_id+jmf_server Type="QueueStatus" xsi:type="QueryQueueStatus")
         Subscription(URL=jmf_server)

@@ -1,0 +1,5 @@
+extends ./JMF.pug
+
+block query
+    Command(ID="JDFSpy_QueryStatus-"+device_id+jmf_server Type="StopPersistentChannel" xsi:type="CommandStopPersistentChannel")
+        StopPersChParams(URL=jmf_server)
