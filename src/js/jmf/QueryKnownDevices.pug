@@ -1,7 +1,7 @@
 doctype xml
 JMF(
     xmlns="http://www.CIP4.org/JDFSchema_1_1" 'xmlns:xsi'="http://www.w3.org/2001/XMLSchema-instance"
-    SenderID=application_name Timestamp=Date.now().toString() Version="1.2"
+    SenderID=application_name Timestamp=new Date().toISOString() Version="1.2"
 )
     Query(ID="JDFSpy_DiscoverDevices" Type="KnownDevices" xsi:type="QueryKnownDevices")
         DeviceFilter(DeviceDetails="Brief")

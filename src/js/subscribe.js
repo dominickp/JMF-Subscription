@@ -20,6 +20,11 @@ var Subscribe = function (db, argv) {
     var jmf_server = argv.server; //http://192.168.1.70:9090
     var devices = [];
 
+    var pugOptions = {
+        pretty:true,
+        application_name: "JDF Spy"
+    };
+
     model.init = function(){
 
         // Prepare log file
@@ -32,19 +37,8 @@ var Subscribe = function (db, argv) {
     // Start the request to find devices
     model.discoverDevices = function () {
 
-        var options = {pretty:true};
-        var jmf = pug.renderFile('./jmf/QueryKnownDevices.pug', options);
-
-        console.log(jmf);
-
         // Find presses
-        var jmf_known_devices =
-            '<?xml version="1.0" encoding="UTF-8"?>' +
-            '<JMF xmlns="http://www.CIP4.org/JDFSchema_1_1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" SenderID="' + application_name + '" TimeStamp="2006-04-19T14:48:12-07:00" Version="1.2">' +
-            '<Query ID="JDFSpy_DiscoverDevices" Type="KnownDevices" xsi:type="QueryKnownDevices">' +
-            '<DeviceFilter DeviceDetails="Brief" />' +
-            '</Query>' +
-            '</JMF>';
+        var jmf_known_devices = pug.renderFile('./src/js/jmf/QueryKnownDevices.pug', pugOptions);
 
         // Configure the request
         var options = {
