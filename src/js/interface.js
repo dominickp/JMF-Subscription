@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var argv = require('yargs')
     .usage('Usage: $0 --action [action]')
     .demand(['action'])
