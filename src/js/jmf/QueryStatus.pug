@@ -1,0 +1,6 @@
+extends ./JMF.pug
+
+block query
+    Query(Query ID="JDFSpy_QueryStatus-"+device_id+jmf_server Type="Status" xsi:type="QueryStatus")
+        Subscription(URL=jmf_server)
+        StatusQuParams(DeviceDetails="Details")

@@ -22,7 +22,8 @@ var Subscribe = function (db, argv) {
 
     var pugOptions = {
         pretty:true,
-        application_name: "JDF Spy"
+        application_name: "JDF Spy",
+        jmf_server: jmf_server
     };
 
     model.init = function(){
@@ -89,13 +90,9 @@ var Subscribe = function (db, argv) {
 
         devices.forEach(function (device) {
 
-            var jmf_subscribe = '<?xml version="1.0" encoding="UTF-8"?>' +
-                '<JMF xmlns="http://www.CIP4.org/JDFSchema_1_1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" SenderID="' + application_name + '" TimeStamp="2015-12-18T11:04:35-07:00" Version="1.4">' +
-                '<Query ID="JDFSpy_Detail-' + device + '" Type="Status" xsi:type="QueryStatus">' +
-                '<Subscription URL="' + jmf_server + '" />' +
-                '<StatusQuParams DeviceDetails="Details" />' +
-                '</Query>' +
-                '</JMF>';
+            pugOptions.device_id = device;
+
+            var jmf_subscribe = pug.renderFile('./src/js/jmf/QueryStatus.pug', pugOptions);
 
             //winston.log('info', { jdf: jmf_subscribe });
 
