@@ -92,7 +92,7 @@ var Subscribe = function (db, argv) {
 
             pugOptions.device_id = device;
 
-            var jmf_subscribe = pug.renderFile('./src/js/jmf/QueryStatus.pug', pugOptions);
+            var jmf_subscribe = pug.renderFile('./src/js/jmf/Status.pug', pugOptions);
 
             //winston.log('info', { jdf: jmf_subscribe });
 
