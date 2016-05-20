@@ -2,6 +2,7 @@
 //var request = require('request').debug = false;
 var winston = require('winston');
 var parseString = require('xml2js').parseString;
+var pug = require('pug');
 
 var Subscribe = function (db, argv) {
 
@@ -30,6 +31,11 @@ var Subscribe = function (db, argv) {
 
     // Start the request to find devices
     model.discoverDevices = function () {
+
+        var options = {pretty:true};
+        var jmf = pug.renderFile('./jmf/QueryKnownDevices.pug', options);
+
+        console.log(jmf);
 
         // Find presses
         var jmf_known_devices =
